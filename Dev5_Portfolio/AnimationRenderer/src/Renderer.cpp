@@ -18,8 +18,9 @@ Renderer::Renderer(HWND& window)
 	swap_desc.OutputWindow = *m_window;
 	swap_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swap_desc.BufferDesc = bufferDesc;
-	swap_desc.BufferUsage = DXGI_USAGE_BACK_BUFFER;
+	swap_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swap_desc.SampleDesc.Count = 1;
+	swap_desc.Windowed = true;
 
 	D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0 };
 	// Create Device and Swap Chain
@@ -38,4 +39,8 @@ Renderer::Renderer(HWND& window)
 		0,
 		&m_DeviceContext
 	);
+
+	ID3D11Resource* backBuffer;
+	hr = m_SwapChain->GetBuffer(0, __uuidof(backBuffer), (void**)&backBuffer);
+	hr = m_Device->CreateRenderTargetView(backBuffer, NULL, &m_RTV);
 }

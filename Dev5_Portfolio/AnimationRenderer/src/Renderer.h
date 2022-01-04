@@ -8,7 +8,13 @@ public:
 	// Initializes Necessary Class Variables
 	// Sets Default Renderer Settings
 	Renderer(HWND& window);
-	
+	~Renderer()
+	{
+		m_Device->Release();
+		m_DeviceContext->Release();
+		m_SwapChain->Release();
+		m_RTV->Release();
+	}
 
 private:
 	HRESULT hr;
@@ -18,7 +24,7 @@ private:
 	ID3D11Device* m_Device;
 	IDXGISwapChain* m_SwapChain;
 	ID3D11DeviceContext* m_DeviceContext;
-	ID3D10RenderTargetView* m_RTV;
+	ID3D11RenderTargetView* m_RTV;
 	D3D11_VIEWPORT m_ViewPort;
 
 };

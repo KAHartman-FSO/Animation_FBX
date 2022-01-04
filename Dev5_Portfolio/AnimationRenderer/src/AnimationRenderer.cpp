@@ -53,7 +53,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        if (msg.lParam == WM_QUIT)
+        if (msg.message == WM_QUIT)
             break;
     }
 
