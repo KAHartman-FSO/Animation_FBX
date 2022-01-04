@@ -16,6 +16,8 @@ public:
 		m_RTV->Release();
 	}
 
+	void Render();
+
 private:
 	HRESULT hr;
 	HWND* m_window;

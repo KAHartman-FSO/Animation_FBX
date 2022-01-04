@@ -39,8 +39,15 @@ Renderer::Renderer(HWND& window)
 		0,
 		&m_DeviceContext
 	);
-
+	// Create Render Target View
 	ID3D11Resource* backBuffer;
 	hr = m_SwapChain->GetBuffer(0, __uuidof(backBuffer), (void**)&backBuffer);
-	hr = m_Device->CreateRenderTargetView(backBuffer, NULL, &m_RTV);
+	if (backBuffer != NULL)
+		hr = m_Device->CreateRenderTargetView(backBuffer, NULL, &m_RTV);
+	// Create ViewPort
+	m_ViewPort.Width = m_windowRect.right - m_windowRect.left;
+	m_ViewPort.Height = m_windowRect.bottom - m_windowRect.top;
+	m_ViewPort.TopLeftX = m_ViewPort.TopLeftY = 0;
+	m_ViewPort.MinDepth = 0;
+	m_ViewPort.MaxDepth = 1;
 }
