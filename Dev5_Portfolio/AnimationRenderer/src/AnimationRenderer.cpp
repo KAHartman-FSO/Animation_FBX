@@ -3,13 +3,15 @@
 
 #include "framework.h"
 #include "AnimationRenderer.h"
+#include "Renderer.h"
+
 
 #define MAX_LOADSTRING 100
 
 // Global Variables:
-HINSTANCE hInst;                                // current instance
-WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
-WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+HINSTANCE hInst;                                                           // current instance
+WCHAR szTitle[MAX_LOADSTRING];                              // The title bar text
+WCHAR szWindowClass[MAX_LOADSTRING];               // the main window class name
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -42,14 +44,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-    // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    // Main message loop: 
+    while (true)
     {
+        PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        if (msg.lParam == WM_QUIT)
+            break;
     }
 
     return (int) msg.wParam;
@@ -104,6 +109,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
+
+   Renderer test(hWnd);
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
