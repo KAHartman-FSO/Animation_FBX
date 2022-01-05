@@ -1,10 +1,11 @@
 #include "Renderer.h"
 
-Renderer::Renderer(HWND& window)
+Renderer::Renderer()
 {
-	m_window = &window;
-	GetClientRect(*m_window, &m_windowRect);
 	
+}
+void Renderer::DXSetUp()
+{
 	//	Buffer Descriptor
 	DXGI_MODE_DESC bufferDesc;
 	ZeroMemory(&bufferDesc, sizeof(DXGI_MODE_DESC));
@@ -50,4 +51,12 @@ Renderer::Renderer(HWND& window)
 	m_ViewPort.TopLeftX = m_ViewPort.TopLeftY = 0;
 	m_ViewPort.MinDepth = 0;
 	m_ViewPort.MaxDepth = 1;
+}
+void Renderer::Render()
+{
+	ID3D11RenderTargetView* tempRTVs[] = { m_RTV };
+	m_DeviceContext->OMSetRenderTargets(1, tempRTVs, nullptr);
+
+	float ClearColor[] = { 0.25, 0.75, 0, 1 };
+	m_DeviceContext->ClearRenderTargetView(m_RTV, ClearColor);
 }

@@ -15,7 +15,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];               // the main window class name
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int);
+BOOL                InitInstance(HINSTANCE, int, Renderer&);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
@@ -28,6 +28,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: Place code here.
+    Renderer Project_Alpha;
+    
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -35,28 +37,28 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
-    if (!InitInstance (hInstance, nCmdShow))
+    if (!InitInstance (hInstance, nCmdShow, Project_Alpha))
     {
         return FALSE;
     }
-
+    Project_Alpha.DXSetUp();
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_ANIMATIONRENDERER));
 
     MSG msg;
-
+    
     // Main message loop: 
     while (true)
     {
         PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
+            Project_Alpha.Render();
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
         if (msg.message == WM_QUIT)
             break;
     }
-
     return (int) msg.wParam;
 }
 
@@ -98,7 +100,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, Renderer& rndr)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
@@ -109,12 +111,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
-
-   Renderer test(hWnd);
-
+   
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
-
+   rndr.SetWindow(hWnd);
    return TRUE;
 }
 

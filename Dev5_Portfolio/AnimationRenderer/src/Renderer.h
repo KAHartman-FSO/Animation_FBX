@@ -7,7 +7,7 @@ class Renderer
 public:
 	// Initializes Necessary Class Variables
 	// Sets Default Renderer Settings
-	Renderer(HWND& window);
+	Renderer();
 	~Renderer()
 	{
 		m_Device->Release();
@@ -17,6 +17,10 @@ public:
 	}
 
 	void Render();
+	void DXSetUp();
+
+	// Mutators
+	void SetWindow(HWND& _window) { m_window = &_window; GetClientRect(*m_window, &m_windowRect); }
 
 private:
 	HRESULT hr;
@@ -28,5 +32,4 @@ private:
 	ID3D11DeviceContext* m_DeviceContext;
 	ID3D11RenderTargetView* m_RTV;
 	D3D11_VIEWPORT m_ViewPort;
-
 };
