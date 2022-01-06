@@ -4,8 +4,11 @@ Renderer::Renderer()
 {
 	
 }
-void Renderer::DXSetUp()
+void Renderer::DXSetUp(HWND& _window)
 {
+	m_window = &_window;
+	GetClientRect(*m_window, &m_windowRect);
+
 	//	Buffer Descriptor
 	DXGI_MODE_DESC bufferDesc;
 	ZeroMemory(&bufferDesc, sizeof(DXGI_MODE_DESC));
@@ -59,4 +62,6 @@ void Renderer::Render()
 
 	float ClearColor[] = { 0.25, 0.75, 0, 1 };
 	m_DeviceContext->ClearRenderTargetView(m_RTV, ClearColor);
+
+	m_SwapChain->Present(0, 0);
 }

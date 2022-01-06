@@ -17,10 +17,7 @@ public:
 	}
 
 	void Render();
-	void DXSetUp();
-
-	// Mutators
-	void SetWindow(HWND& _window) { m_window = &_window; GetClientRect(*m_window, &m_windowRect); }
+	void DXSetUp(HWND& _window);
 
 private:
 	HRESULT hr;
