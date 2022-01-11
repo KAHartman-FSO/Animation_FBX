@@ -13,21 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Resource Header Files">
+      <UniqueIdentifier>{424d8d92-1083-442d-b5db-f8bfc0588191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{e3bfd3f1-1fd5-4c0f-aff1-589fbfc04754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Vertex">
+      <UniqueIdentifier>{ee7a7af9-d04f-4ace-9a51-b4cbd6d8b8e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Pixel / Fragment">
+      <UniqueIdentifier>{10e1a3fd-4b52-43e2-bef7-473dda3a4517}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\framework.h">
+    <ClInclude Include="src\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\targetver.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Resource Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Resource Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework.h">
+      <Filter>Header Files\Resource Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AnimationRenderer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Resource Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer.h">
+    <ClInclude Include="src\tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -51,5 +66,13 @@
     <Image Include="src\AnimationRenderer.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\XMPLvShader.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\XMPLpShader.hlsl">
+      <Filter>Shaders\Pixel / Fragment</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
