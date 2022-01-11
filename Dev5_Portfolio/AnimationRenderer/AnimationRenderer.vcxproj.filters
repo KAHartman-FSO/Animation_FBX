@@ -5,25 +5,25 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Pixel Shaders">
+      <UniqueIdentifier>{c7cbf2f9-088b-47b2-b637-3360edf02e36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vertex Shaders">
+      <UniqueIdentifier>{b55cd97d-877c-4377-a2cf-69559605cf42}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Header Files\Hide This">
+      <UniqueIdentifier>{8e52b6f9-f2e1-4316-b9fe-60047f6d3dfb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Resource Header Files">
+    <Filter Include="Header Files\Hide This\Resource Header Files">
       <UniqueIdentifier>{424d8d92-1083-442d-b5db-f8bfc0588191}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{e3bfd3f1-1fd5-4c0f-aff1-589fbfc04754}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Vertex">
-      <UniqueIdentifier>{ee7a7af9-d04f-4ace-9a51-b4cbd6d8b8e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Pixel / Fragment">
-      <UniqueIdentifier>{10e1a3fd-4b52-43e2-bef7-473dda3a4517}</UniqueIdentifier>
+    <Filter Include="Header Files\Hide This\Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -31,16 +31,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\targetver.h">
-      <Filter>Header Files\Resource Header Files</Filter>
+      <Filter>Header Files\Hide This\Resource Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Resource.h">
-      <Filter>Header Files\Resource Header Files</Filter>
+      <Filter>Header Files\Hide This\Resource Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\framework.h">
-      <Filter>Header Files\Resource Header Files</Filter>
+      <Filter>Header Files\Hide This\Resource Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AnimationRenderer.h">
-      <Filter>Header Files\Resource Header Files</Filter>
+      <Filter>Header Files\Hide This\Resource Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\tools.h">
       <Filter>Header Files</Filter>
@@ -56,23 +56,23 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\AnimationRenderer.rc">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files\Hide This\Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files\Hide This\Resource Files</Filter>
     </Image>
     <Image Include="src\AnimationRenderer.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files\Hide This\Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\XMPLvShader.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="shaders\XMPLpShader.hlsl">
-      <Filter>Shaders\Pixel / Fragment</Filter>
+      <Filter>Pixel Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\XMPLvShader.hlsl">
+      <Filter>Vertex Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
