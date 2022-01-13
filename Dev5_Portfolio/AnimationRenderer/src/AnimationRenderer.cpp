@@ -13,6 +13,7 @@ HINSTANCE hInst;                                                           // cu
 WCHAR szTitle[MAX_LOADSTRING];                              // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];               // the main window class name
 
+
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int, Renderer&);
@@ -28,8 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: Place code here.
-    Renderer Project_Alpha;
-    
+    Renderer myRenderer;
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -37,22 +37,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
-    if (!InitInstance (hInstance, nCmdShow, Project_Alpha))
+    if (!InitInstance (hInstance, nCmdShow, myRenderer))
     {
         return FALSE;
     }
-    Project_Alpha.DXSetUp();
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_ANIMATIONRENDERER));
 
     MSG msg;
     
+
     // Main message loop: 
     while (true)
     {
         PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
-            Project_Alpha.Render();
+            myRenderer.Render();
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
@@ -100,8 +100,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, Renderer& rndr)
-{
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, Renderer& myRenderer){
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
@@ -111,10 +110,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, Renderer& rndr)
    {
       return FALSE;
    }
-   
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
-   rndr.SetWindow(hWnd);
+   myRenderer.DXSetUp(hWnd);
    return TRUE;
 }
 
@@ -149,14 +147,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
-        }
-        break;
+    //case WM_PAINT:
+    //    {
+    //        PAINTSTRUCT ps;
+    //        HDC hdc = BeginPaint(hWnd, &ps);
+    //        // TODO: Add any drawing code that uses hdc here...
+    //        EndPaint(hWnd, &ps);
+    //    }
+    //    break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
