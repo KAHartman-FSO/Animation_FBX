@@ -59,8 +59,11 @@ private:
 	// Pipeline Oriented Functions
 	void CreateDXVars();
 	void CreateViewProjectionMatrices();
+
 	void Load_Pyramid();
 	void Draw_Pyramid();
+	void Load_Lines();
+	void Draw_Lines();
 
 	// Helper Functions
 	float calc_delta_time();

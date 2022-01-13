@@ -19,6 +19,7 @@ void Renderer::DXSetUp(HWND _window)
 
 	CreateDXVars();
 	Load_Pyramid();
+	Load_Lines();
 }
 
 void Renderer::CreateDXVars() {

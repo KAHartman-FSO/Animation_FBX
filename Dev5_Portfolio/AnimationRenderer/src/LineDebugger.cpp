@@ -32,12 +32,12 @@ void LineDebugger::CreateGrid(int pWidth, int pHeight, float pSpacing, ColorVert
 	unsigned int num_xSquares = pWidth / pSpacing;
 	unsigned int num_ySquares = pHeight / pSpacing;
 
-	// Get & Axis Lines
+	// Get Y Axis Lines
 	for (int i = 0; i < num_xSquares; i++)
 	{
 
 	}
-	// Get Y Axis Lines
+	// Get X Axis Lines
 	for (int i = 0; i < num_ySquares; i++)
 	{
 

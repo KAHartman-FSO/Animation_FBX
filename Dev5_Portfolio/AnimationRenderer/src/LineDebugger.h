@@ -11,6 +11,7 @@ public:
 	void ClearLines();
 	
 	void CreateGrid(int pWidth, int pHeight, float pSpacing, ColorVertex pCenter);
+	void CreateMatrixLines();
 
 private:
 	const size_t MAX_LINE_VERTS = 10000;
