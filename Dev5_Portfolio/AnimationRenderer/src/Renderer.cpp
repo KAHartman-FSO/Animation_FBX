@@ -1,13 +1,26 @@
 #include "Renderer.h"
-#define PYRAMID_VERTS 12
 
-Renderer::Renderer()
-{}
-////////////////////////////////////////////////////////////////////////////////////////////////
-///
-/// Creates Device, SwapChain, DeviceContext, Render Target View, and Viewport
-///
-////////////////////////////////////////////////////////////////////////////////////////////////
+float Renderer::calc_delta_time()
+{
+	static std::chrono::time_point<std::chrono::high_resolution_clock> last_time = std::chrono::high_resolution_clock::now();
+
+	std::chrono::time_point<std::chrono::high_resolution_clock> new_time = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<float> elapsed_seconds = new_time - last_time;
+	last_time = new_time;
+
+	return elapsed_seconds.count();
+}
+
+void Renderer::DXSetUp(HWND _window)
+{
+	m_window = _window;
+	GetClientRect(m_window, &m_windowRect);
+	m_aspectRatio = static_cast<float>((m_windowRect.right - m_windowRect.left) / (m_windowRect.bottom - m_windowRect.top));
+
+	CreateDXVars();
+	Load_Pyramid();
+}
+
 void Renderer::CreateDXVars() {
 	//	Buffer Descriptor
 	DXGI_MODE_DESC bufferDesc;
@@ -41,7 +54,8 @@ void Renderer::CreateDXVars() {
 	m_ViewPort.MinDepth = 0;
 	m_ViewPort.MaxDepth = 1;
 }
-void Renderer::Prep_Pyramid() {
+
+void Renderer::Load_Pyramid() {
 	tools::ColorVertex pyramid[]
 	{
 		// Front
@@ -58,8 +72,8 @@ void Renderer::Prep_Pyramid() {
 		{{-0.25f, -0.25, 0.25f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
 		// Back
 		{{0.0f, 1.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{{-0.25f, 0.25, 0.25f, 1.0f}, {0.0f, 0.0f,1.0f, 1.0f}},
-		{{0.25f, 0.25, 0.25f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}}
+		{{-0.25f, -0.25, 0.25f, 1.0f}, {0.0f, 0.0f,1.0f, 1.0f}},
+		{{0.25f, -0.25, 0.25f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}}
 	};
 	D3D11_BUFFER_DESC vbDesc;
 	D3D11_SUBRESOURCE_DATA subData;
@@ -96,19 +110,7 @@ void Renderer::Prep_Pyramid() {
 
 	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_ConstantBuffer);
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 
-// Function Call to Set Up / Send Everything we need to the GPU before our Game Loop
-// 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Renderer::DXSetUp(HWND _window)
-{
-	m_window = _window;
-	GetClientRect(m_window, &m_windowRect);
 
-	CreateDXVars();
-	Prep_Pyramid();
-}
 void Renderer::CreateViewProjectionMatrices()
 {
 	// View Matrix ( Camera Matrix )
@@ -120,15 +122,21 @@ void Renderer::CreateViewProjectionMatrices()
 	temp = XMMatrixPerspectiveFovLH(3.14f / 2.0f, m_aspectRatio, 0.1f, 1000);
 	XMStoreFloat4x4(&m_Matrices.projection, temp);
 }
+
 void Renderer::Draw_Pyramid()
 {
-	m_aspectRatio = static_cast<float>((m_windowRect.right - m_windowRect.left) / (m_windowRect.bottom - m_windowRect.top));
+	const int PYRAMID_VERTS = 12;
 
 	// World Matrix Set
 	XMMATRIX temp = XMMatrixIdentity();
-	temp = XMMatrixTranslation(0, 0, 3);
-	temp = XMMatrixTranspose(temp);
-	//XMMATRIX temp2 = XMMatrixRotationY()
+	temp = XMMatrixTranslation(0, 0, 1);
+	
+	float rot_speed = 3;
+	static float theta = 0;
+	theta += rot_speed * m_deltaTime;
+	XMMATRIX temp2 = XMMatrixRotationY(theta);
+	
+	temp = XMMatrixMultiply(temp2, temp);
 	XMStoreFloat4x4(&m_Matrices.world, temp);
 
 	// Sending Data to GPU
@@ -139,7 +147,6 @@ void Renderer::Draw_Pyramid()
 
 	ID3D11Buffer* constants[] = { m_ConstantBuffer };
 	m_DeviceContext->VSSetConstantBuffers(0, 1, constants);
-
 
 	UINT strides[] = { sizeof(tools::ColorVertex) };
 	UINT offsets[] = { 0 };
@@ -155,12 +162,16 @@ void Renderer::Render()
 {
 	float Color[] = { 0.25, 0.25, 0.25, 1 };
 	m_DeviceContext->ClearRenderTargetView(m_RTV, Color);
+	m_deltaTime = calc_delta_time();
 
 	ID3D11RenderTargetView* tempRTVs[] = { m_RTV };
 	m_DeviceContext->OMSetRenderTargets(1, tempRTVs, nullptr);
 	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
 	m_DeviceContext->IASetInputLayout(m_VertexLayout);
 	CreateViewProjectionMatrices();
+
+
 	Draw_Pyramid();
 	m_SwapChain->Present(0, 0);
 }
+

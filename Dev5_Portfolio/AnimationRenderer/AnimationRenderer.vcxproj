@@ -179,6 +179,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\LineDebugger.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\AnimationRenderer.h" />
     <ClInclude Include="src\framework.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="src\tools.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\LineDebugger.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\AnimationRenderer.cpp" />
   </ItemGroup>

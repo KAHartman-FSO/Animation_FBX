@@ -5,6 +5,7 @@
 using namespace DirectX;
 
 #include "tools.h"
+#include "LineDebugger.h"
 #include "XMPLvShader.csh"
 #include "XMPLpShader.csh"
 struct WVP
@@ -16,7 +17,7 @@ struct WVP
 class Renderer
 {
 public:
-	Renderer();
+	Renderer() {}
 	~Renderer()
 	{
 		m_Device->Release();
@@ -28,7 +29,6 @@ public:
 		m_PixelShader->Release();
 		m_VertexLayout->Release();
 	}
-
 	void Render();
 	void DXSetUp(HWND _window);
 
@@ -37,6 +37,7 @@ private:
 	HWND m_window;
 	RECT m_windowRect;
 	float m_aspectRatio = 1;
+	float m_deltaTime;
 
 	ID3D11Device* m_Device;
 	IDXGISwapChain* m_SwapChain;
@@ -51,12 +52,16 @@ private:
 
 	ID3D11Buffer* m_ConstantBuffer;
 
-	
 	WVP m_Matrices;
 
+	LineDebugger m_lineDebugger;
 
+	// Pipeline Oriented Functions
 	void CreateDXVars();
 	void CreateViewProjectionMatrices();
-	void Prep_Pyramid();
+	void Load_Pyramid();
 	void Draw_Pyramid();
+
+	// Helper Functions
+	float calc_delta_time();
 };
