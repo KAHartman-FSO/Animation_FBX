@@ -1,6 +1,6 @@
 struct OutputVertex
 {
-	float4 xyzw : OPOSITION;
+	float4 xyzw : SV_POSITION;
 	float4 rgba : OCOLOR;
 };
 

@@ -7,16 +7,26 @@ using namespace tools;
 class LineDebugger
 {
 public:
-	bool AddLine(ColorVertex vertex1, ColorVertex vertex2);
-	void ClearLines();
 	
+	void ClearLines();
 	void CreateGrid(int pWidth, int pHeight, float pSpacing, ColorVertex pCenter);
-	void CreateMatrixLines();
+	//void CreateMatrixLines();
+
+	unsigned int GetSize()
+	{
+		return m_LineCount * sizeof(ColorVertex);
+	}
+	unsigned int GetLineCount()
+	{
+		return m_LineCount;
+	}
 
 private:
-	const size_t MAX_LINE_VERTS = 10000;
+	static const int MAX_LINE_VERTS = 10000;
 	unsigned int m_LineCount;
-	std::vector<ColorVertex> m_lineList;
+	void AddLine(ColorVertex vertex1, ColorVertex vertex2);
 
+public:
+	ColorVertex m_LineArray[MAX_LINE_VERTS];
 };
 

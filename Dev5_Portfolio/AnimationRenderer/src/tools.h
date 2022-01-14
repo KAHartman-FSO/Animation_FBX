@@ -8,10 +8,8 @@ namespace tools
 	};
 	struct float3
 	{
-		union
-		{
-			struct
-			{
+		union{
+			struct{
 				float x, y, z;
 			};
 			float2 xy;
@@ -50,6 +48,15 @@ namespace tools
 	{
 		float4 pos;
 		float4 col;
+
+		ColorVertex& operator=(ColorVertex& that)
+		{
+			pos.xyz = that.pos.xyz;
+			pos.w = that.pos.w;
+			col.xyz = that.col.xyz;
+			col.w = that.col.w;
+			return *this;
+		}
 	}; 
 }
 

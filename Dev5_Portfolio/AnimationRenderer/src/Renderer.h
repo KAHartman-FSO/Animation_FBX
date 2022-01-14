@@ -24,10 +24,12 @@ public:
 		m_SwapChain->Release();
 		m_DeviceContext->Release();
 		m_RTV->Release();
-		m_VertexBuffer->Release();
+		m_PyramidVertexBuffer->Release();
 		m_VertexShader->Release();
 		m_PixelShader->Release();
-		m_VertexLayout->Release();
+		m_ColorVertexLayout->Release();
+		m_LineVertexBuffer->Release();
+		m_WVPConstantBuffer->Release();
 	}
 	void Render();
 	void DXSetUp(HWND _window);
@@ -45,19 +47,21 @@ private:
 	ID3D11RenderTargetView* m_RTV;
 	D3D11_VIEWPORT m_ViewPort;
 
-	ID3D11Buffer* m_VertexBuffer;
-	ID3D11InputLayout* m_VertexLayout;
+	ID3D11Buffer* m_PyramidVertexBuffer;
+	ID3D11InputLayout* m_ColorVertexLayout;
 	ID3D11VertexShader* m_VertexShader;
 	ID3D11PixelShader* m_PixelShader;
 
-	ID3D11Buffer* m_ConstantBuffer;
+	ID3D11Buffer* m_WVPConstantBuffer;
 
 	WVP m_Matrices;
 
 	LineDebugger m_lineDebugger;
+	ID3D11Buffer* m_LineVertexBuffer;
 
 	// Pipeline Oriented Functions
 	void CreateDXVars();
+	void CreateInputLayoutsAndShaders();
 	void CreateViewProjectionMatrices();
 
 	void Load_Pyramid();

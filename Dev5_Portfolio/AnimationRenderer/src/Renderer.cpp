@@ -18,6 +18,7 @@ void Renderer::DXSetUp(HWND _window)
 	m_aspectRatio = static_cast<float>((m_windowRect.right - m_windowRect.left) / (m_windowRect.bottom - m_windowRect.top));
 
 	CreateDXVars();
+	CreateInputLayoutsAndShaders();
 	Load_Pyramid();
 	Load_Lines();
 }
@@ -55,6 +56,49 @@ void Renderer::CreateDXVars() {
 	m_ViewPort.MinDepth = 0;
 	m_ViewPort.MaxDepth = 1;
 }
+void Renderer::Load_Lines()
+{
+	tools::ColorVertex gridCenterVertex = { {0.0f, 0.0f, 0.0f, 1.0f}, {0.65f, 0.0f, 0.65f, 1.0f} };
+	m_lineDebugger.CreateGrid(64, 8, 0.5f, gridCenterVertex);
+
+	// Create a Buffer
+	D3D11_BUFFER_DESC vbDesc;
+	D3D11_SUBRESOURCE_DATA subData;
+	ZeroMemory(&vbDesc, sizeof(D3D11_BUFFER_DESC));
+	ZeroMemory(&subData, sizeof(D3D11_SUBRESOURCE_DATA));
+	vbDesc.ByteWidth = m_lineDebugger.GetSize();
+	vbDesc.Usage = D3D11_USAGE_DEFAULT;
+	vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbDesc.CPUAccessFlags = NULL;
+	vbDesc.MiscFlags = NULL;
+	vbDesc.StructureByteStride = 0;
+	subData.pSysMem = m_lineDebugger.m_LineArray;
+	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_LineVertexBuffer);
+}
+void Renderer::Draw_Lines()
+{
+	XMMATRIX temp = XMMatrixIdentity();
+	XMStoreFloat4x4(&m_Matrices.world, temp);
+
+	// Sending Data to GPU
+	D3D11_MAPPED_SUBRESOURCE gpuBuffer;
+	hr = m_DeviceContext->Map(m_WVPConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &gpuBuffer);
+	memcpy(gpuBuffer.pData, &m_Matrices, sizeof(WVP));
+	m_DeviceContext->Unmap(m_WVPConstantBuffer, 0);
+
+	ID3D11Buffer* constants[] = { m_WVPConstantBuffer };
+	m_DeviceContext->VSSetConstantBuffers(0, 1, constants);
+
+	UINT strides[] = { sizeof(tools::ColorVertex) };
+	UINT offsets[] = { 0 };
+	ID3D11Buffer* tempVB[] = { m_LineVertexBuffer };
+	m_DeviceContext->IASetVertexBuffers(0, 1, tempVB, strides, offsets);
+	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	m_DeviceContext->VSSetShader(m_VertexShader, 0, 0);
+	m_DeviceContext->PSSetShader(m_PixelShader, 0, 0);
+
+	m_DeviceContext->Draw(m_lineDebugger.GetLineCount(), 0);
+}
 
 void Renderer::Load_Pyramid() {
 	tools::ColorVertex pyramid[]
@@ -86,21 +130,27 @@ void Renderer::Load_Pyramid() {
 	vbDesc.CPUAccessFlags = NULL;
 	vbDesc.MiscFlags = NULL;
 	vbDesc.StructureByteStride = 0;
-
 	subData.pSysMem = pyramid;
+	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_PyramidVertexBuffer);
+}
 
-	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_VertexBuffer);
-
+void Renderer::CreateInputLayoutsAndShaders()
+{
+	// Create Shaders
 	hr = m_Device->CreateVertexShader(XMPLvShader, sizeof(XMPLvShader), nullptr, &m_VertexShader);
 	hr = m_Device->CreatePixelShader(XMPLpShader, sizeof(XMPLpShader), nullptr, &m_PixelShader);
 
+	// Create InputLayout
 	D3D11_INPUT_ELEMENT_DESC inputDesc[]
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
-	hr = m_Device->CreateInputLayout(inputDesc, 2, XMPLvShader, sizeof(XMPLvShader), &m_VertexLayout);
+	hr = m_Device->CreateInputLayout(inputDesc, 2, XMPLvShader, sizeof(XMPLvShader), &m_ColorVertexLayout);
 
+	// Allocate Space for World View and Projection Matrix
+	D3D11_BUFFER_DESC vbDesc;
+	D3D11_SUBRESOURCE_DATA subData;
 	ZeroMemory(&vbDesc, sizeof(D3D11_BUFFER_DESC));
 	vbDesc.ByteWidth = sizeof(WVP);
 	vbDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -108,8 +158,8 @@ void Renderer::Load_Pyramid() {
 	vbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	vbDesc.MiscFlags = 0;
 	vbDesc.StructureByteStride = 0;
-
-	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_ConstantBuffer);
+	subData.pSysMem = &m_Matrices;
+	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_WVPConstantBuffer);
 }
 
 void Renderer::CreateViewProjectionMatrices()
@@ -142,16 +192,16 @@ void Renderer::Draw_Pyramid()
 
 	// Sending Data to GPU
 	D3D11_MAPPED_SUBRESOURCE gpuBuffer;
-	hr = m_DeviceContext->Map(m_ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &gpuBuffer);
+	hr = m_DeviceContext->Map(m_WVPConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &gpuBuffer);
 	memcpy(gpuBuffer.pData, &m_Matrices, sizeof(WVP));
-	m_DeviceContext->Unmap(m_ConstantBuffer, 0);
+	m_DeviceContext->Unmap(m_WVPConstantBuffer, 0);
 
-	ID3D11Buffer* constants[] = { m_ConstantBuffer };
+	ID3D11Buffer* constants[] = { m_WVPConstantBuffer };
 	m_DeviceContext->VSSetConstantBuffers(0, 1, constants);
 
 	UINT strides[] = { sizeof(tools::ColorVertex) };
 	UINT offsets[] = { 0 };
-	ID3D11Buffer* tempVB[] = { m_VertexBuffer };
+	ID3D11Buffer* tempVB[] = { m_PyramidVertexBuffer };
 	m_DeviceContext->IASetVertexBuffers(0, 1, tempVB, strides, offsets);
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_DeviceContext->VSSetShader(m_VertexShader, 0, 0);
@@ -161,17 +211,17 @@ void Renderer::Draw_Pyramid()
 }
 void Renderer::Render()
 {
-	float Color[] = { 0.25, 0.25, 0.25, 1 };
+	float Color[] = { 1.0f, 1.0f, 1.0f, 1 };
 	m_DeviceContext->ClearRenderTargetView(m_RTV, Color);
 	m_deltaTime = calc_delta_time();
 
 	ID3D11RenderTargetView* tempRTVs[] = { m_RTV };
 	m_DeviceContext->OMSetRenderTargets(1, tempRTVs, nullptr);
 	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
-	m_DeviceContext->IASetInputLayout(m_VertexLayout);
+	m_DeviceContext->IASetInputLayout(m_ColorVertexLayout);
 	CreateViewProjectionMatrices();
 
-
+	Draw_Lines();
 	Draw_Pyramid();
 	m_SwapChain->Present(0, 0);
 }

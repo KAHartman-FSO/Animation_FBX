@@ -5,7 +5,14 @@
       <FullPath>C:\Users\Keagan\Documents\Magic\Dev5 2\Animation_FBX\Dev5_Portfolio\bin\Debug\AnimationRenderer.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
-  <ContentFiles />
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\Keagan\Documents\Magic\Dev5 2\Animation_FBX\Dev5_Portfolio\bin\Debug\XMPLpShader.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\Keagan\Documents\Magic\Dev5 2\Animation_FBX\Dev5_Portfolio\bin\Debug\XMPLvShader.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
   <SatelliteDlls />
   <NonRecipeFileRefs />
 </Project>
