@@ -32,10 +32,7 @@
 *.out
 *.app
 
-# Bin
-bin
-
 # Extras
 *.opendb
 
-/Dev5_Portfolio/bin
+bin
