@@ -2,14 +2,17 @@
 #include <chrono>
 namespace tools
 {
+	// Math Types
 	struct float2
 	{
 		float x, y;
 	};
 	struct float3
 	{
-		union{
-			struct{
+		union
+		{
+			struct
+			{
 				float x, y, z;
 			};
 			float2 xy;
@@ -43,7 +46,17 @@ namespace tools
 			};
 			float3 xyz;
 		};
+
+		float4& operator=(const float4& that)
+		{
+			x = that.x;
+			y = that.y;
+			z= that.z;
+			w = that.w;
+		}
 	};
+
+	// Vertex Types for Rendering
 	struct ColorVertex
 	{
 		float4 pos;
