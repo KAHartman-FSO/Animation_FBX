@@ -1,4 +1,5 @@
 #pragma once
+#include <bitset>
 #include <d3d11.h>
 #pragma comment (lib, "d3d11.lib")
 #include <DirectXMath.h>
@@ -8,6 +9,10 @@ using namespace DirectX;
 #include "LineDebugger.h"
 #include "XMPLvShader.csh"
 #include "XMPLpShader.csh"
+namespace KEY
+{
+	enum KEYBOARD_KEY { W, A, S, D, DOWN, UP, LEFT, RIGHT, SPACE, LSHIFT, LCTRL, MBUTTON };
+}
 struct WVP
 {
 	XMFLOAT4X4 world;
@@ -18,6 +23,8 @@ class Renderer
 {
 public:
 	Renderer() {}
+
+	// Frees All Memory from Renderer
 	~Renderer()
 	{
 		m_Device->Release();
@@ -31,8 +38,23 @@ public:
 		m_LineVertexBuffer->Release();
 		m_WVPConstantBuffer->Release();
 	}
-	void Render();
-	void DXSetUp(HWND _window);
+	void RenderLoop()
+	{
+		LoopCalls();
+		DrawCalls();	
+
+		m_SwapChain->Present(0, 0);
+	}
+	void DXSetUp(HWND _window)
+	{
+		m_window = _window;
+		GetClientRect(m_window, &m_windowRect);
+		m_aspectRatio = static_cast<float>((m_windowRect.right - m_windowRect.left) / (m_windowRect.bottom - m_windowRect.top));
+
+		CreateCalls();
+		LoadCalls();
+	}
+	void QueryInput(UINT _message, WPARAM _wParam);
 
 private:
 	HRESULT hr;
@@ -40,6 +62,8 @@ private:
 	RECT m_windowRect;
 	float m_aspectRatio = 1;
 	float m_deltaTime;
+
+	std::bitset<12> m_KB_Input;
 
 	ID3D11Device* m_Device;
 	IDXGISwapChain* m_SwapChain;
@@ -59,16 +83,41 @@ private:
 	LineDebugger m_lineDebugger;
 	ID3D11Buffer* m_LineVertexBuffer;
 
-	// Pipeline Oriented Functions
+#pragma region Render.cpp
+	void CreateCalls();
+	void LoopCalls();
+
+	// Before Loop
 	void CreateDXVars();
 	void CreateInputLayoutsAndShaders();
 	void CreateViewProjectionMatrices();
+	void CreateConstantBuffers();
 
+	// In Loop
+	void SetRenderTargetsAndViewPorts();
+	void UpdateCamera();
+	void UpdateInput(WPARAM, bool);
+
+	// Renderer_LOAD
+	void LoadCalls();
 	void Load_Pyramid();
-	void Draw_Pyramid();
 	void Load_Lines();
+
+	// Renderer_DRAW
+	void DrawCalls();
+	void Draw_Pyramid();
 	void Draw_Lines();
 
-	// Helper Functions
-	float calc_delta_time();
+#pragma region Extra Helper Functions
+	float calc_delta_time()
+	{
+		static std::chrono::time_point<std::chrono::high_resolution_clock> last_time = std::chrono::high_resolution_clock::now();
+
+		std::chrono::time_point<std::chrono::high_resolution_clock> new_time = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<float> elapsed_seconds = new_time - last_time;
+		last_time = new_time;
+
+		return elapsed_seconds.count();
+	}
+#pragma endregion
 };

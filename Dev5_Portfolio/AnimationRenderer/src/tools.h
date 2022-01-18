@@ -35,6 +35,10 @@ namespace tools
 		{
 			return { lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z };
 		}
+		inline friend float3 operator*(float3 lhs, float rhs)
+		{
+			return { lhs.x * rhs, lhs.y * rhs, lhs.z * rhs };
+		}
 	};
 	struct float4
 	{
@@ -53,6 +57,8 @@ namespace tools
 			y = that.y;
 			z= that.z;
 			w = that.w;
+
+			return *this;
 		}
 	};
 

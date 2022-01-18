@@ -8,15 +8,19 @@
 
 #define MAX_LOADSTRING 100
 
-// Global Variables:
-HINSTANCE hInst;                                                           // current instance
-WCHAR szTitle[MAX_LOADSTRING];                              // The title bar text
-WCHAR szWindowClass[MAX_LOADSTRING];               // the main window class name
+namespace
+{
+    // Global Variables:
+    HINSTANCE hInst;                                                           // current instance
+    WCHAR szTitle[MAX_LOADSTRING];                              // The title bar text
+    WCHAR szWindowClass[MAX_LOADSTRING];               // the main window class name
 
+    Renderer myRenderer;
+}
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int, Renderer&);
+BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
@@ -29,7 +33,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: Place code here.
-    Renderer myRenderer;
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -37,7 +40,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
-    if (!InitInstance (hInstance, nCmdShow, myRenderer))
+    if (!InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
     }
@@ -52,7 +55,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE);
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
-            myRenderer.Render();
+            myRenderer.RenderLoop();
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
@@ -100,7 +103,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, Renderer& myRenderer){
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow){
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
@@ -128,6 +131,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, Renderer& myRenderer){
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    myRenderer.QueryInput(message, wParam);
     switch (message)
     {
     case WM_COMMAND:

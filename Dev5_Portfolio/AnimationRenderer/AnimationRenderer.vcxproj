@@ -198,6 +198,8 @@
     <ClCompile Include="src\LineDebugger.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\AnimationRenderer.cpp" />
+    <ClCompile Include="src\Renderer_DRAW.cpp" />
+    <ClCompile Include="src\Renderer_LOAD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\AnimationRenderer.rc" />
