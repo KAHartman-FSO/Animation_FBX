@@ -2,8 +2,9 @@
 void Renderer::DrawCalls()
 {
 	m_DeviceContext->IASetInputLayout(m_ColorVertexLayout);
-	Draw_Lines();
 	Draw_Pyramid();
+	Draw_Lines();
+	
 }
 
 void Renderer::Draw_Pyramid()

@@ -6,15 +6,17 @@ void Renderer::CreateCalls()
 	CreateInputLayoutsAndShaders();
 	CreateConstantBuffers();
 	CreateViewProjectionMatrices();
+	CreateZBufferAndView();
 }
 void Renderer::LoopCalls()
 {
 	m_deltaTime = calc_delta_time();
 	float Color[] = { 0.25f, 0.25f, 0.5f, 1 };
 	m_DeviceContext->ClearRenderTargetView(m_RTV, Color);
+	m_DeviceContext->ClearDepthStencilView(m_zBufferView, D3D11_CLEAR_DEPTH, 1.0f, NULL);
 
 	UpdateCamera();
-	SetRenderTargetsAndViewPorts();
+	SetRenderVars();
 }
 
 void Renderer::CreateDXVars() {
@@ -81,11 +83,30 @@ void Renderer::CreateConstantBuffers()
 	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_WVPConstantBuffer);
 }
 
+void Renderer::CreateZBufferAndView()
+{
+	D3D11_TEXTURE2D_DESC zDesc;
+	ZeroMemory(&zDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	zDesc.ArraySize = 1;
+	zDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	zDesc.Width = m_windowRect.right - m_windowRect.left;
+	zDesc.Height = m_windowRect.bottom - m_windowRect.top;
+	zDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	zDesc.Usage = D3D11_USAGE_DEFAULT;
+	zDesc.MipLevels = 1;
+	zDesc.SampleDesc.Count = 1;
+
+	hr = m_Device->CreateTexture2D(&zDesc, nullptr, &m_zBuffer);
+
+	if (m_zBuffer != 0)
+		hr = m_Device->CreateDepthStencilView(m_zBuffer, nullptr, &m_zBufferView);
+}
+
 void Renderer::CreateViewProjectionMatrices()
 {
 	// View Matrix ( Camera Matrix )
 	XMMATRIX temp;
-	temp = XMMatrixLookAtLH({ 2, 1, -3 }, { 0, 0, 0 }, { 0, 1, 0 });
+	temp = XMMatrixLookAtLH({ 1, 2, -2 }, { 0, 0, 0 }, { 0, 1, 0 });
 	XMStoreFloat4x4(&m_Matrices.view, temp);
 
 	// Projection
@@ -96,6 +117,12 @@ void Renderer::CreateViewProjectionMatrices()
 /// <summary>
 ///								<<<<<<<<< __Loop Calls__ >>>>>>>>>>>
 /// </summary>
+void Renderer::SetRenderVars()
+{
+	ID3D11RenderTargetView* tempRTVs[] = { m_RTV };
+	m_DeviceContext->OMSetRenderTargets(1, tempRTVs, m_zBufferView);
+	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
+}
 void Renderer::UpdateInput(WPARAM _wParam, bool desiredState)
 {
 	if (_wParam == 'W')
@@ -118,11 +145,6 @@ void Renderer::UpdateInput(WPARAM _wParam, bool desiredState)
 		m_KB_Input.set(KEY::LEFT, desiredState);
 	else if (_wParam == VK_RIGHT)
 		m_KB_Input.set(KEY::RIGHT, desiredState);
-	else if (_wParam == VK_LCONTROL)
-		m_KB_Input.set(KEY::LCTRL, desiredState);
-	else if (_wParam == VK_MBUTTON)
-		m_KB_Input.set(KEY::MBUTTON, desiredState);
-	
 }
 void Renderer::QueryInput(UINT _message, WPARAM _wParam)
 {
@@ -140,48 +162,69 @@ void Renderer::QueryInput(UINT _message, WPARAM _wParam)
 }
 void Renderer::UpdateCamera()
 {
-	// Take in input from Windows, update View Matrix
-	// Check state of each key, and update a matrix accordingly
-
 	if (m_KB_Input.any())
 	{
-		float moveSpeed = 10;
-		float appliedSpeed = moveSpeed * m_deltaTime;
-		XMMATRIX temp = XMMatrixIdentity();
-		float3 translation = { 0, 0, 0 };
-		
-		// Translation
-		if (m_KB_Input.test(KEY::LSHIFT))			// Sprint
-			appliedSpeed *= 2.0f;
-		if (m_KB_Input.test(KEY::MBUTTON))	// Slow Walk
-			appliedSpeed *= 0.5f;
+		const float moveSpeed = 10;
+		const float rotationSpeed = 5;
 
-		if (m_KB_Input.test(KEY::W))
-			translation.z += appliedSpeed;
-		if (m_KB_Input.test(KEY::S))
-			translation.z -= appliedSpeed;
-		if (m_KB_Input.test(KEY::A))
-			translation.x -= appliedSpeed;
-		if (m_KB_Input.test(KEY::D))
-			translation.x += appliedSpeed;
+		const float xClamp = 0.8f;;
 
-	
-		// Update View Matrix
-		temp = XMMatrixTranslation(translation.x, 0, translation.z);
+		float appliedMovement = moveSpeed * m_deltaTime;
+		float appliedRotation = rotationSpeed * m_deltaTime;
 
 		XMMATRIX camera = XMLoadFloat4x4(&m_Matrices.view);
-		camera = XMMatrixMultiply(temp, camera);
+		XMVECTOR determinant = XMMatrixDeterminant(camera);
+		camera = XMMatrixInverse(&determinant, camera);
 
+		XMMATRIX local_temp = XMMatrixIdentity();
+		XMMATRIX global_temp = XMMatrixIdentity();
+		float3 translation = { 0, 0, 0 };
+		float3 rotation = { 0, 0, 0 };
 
-		camera = XMMatrixTranspose(camera);
+		// Translation
+		if (m_KB_Input.test(KEY::W))
+			translation.z += appliedMovement;
+		if (m_KB_Input.test(KEY::S))
+			translation.z -= appliedMovement;
+		if (m_KB_Input.test(KEY::A))
+			translation.x -= appliedMovement;
+		if (m_KB_Input.test(KEY::D))
+			translation.x += appliedMovement;
+
+		if (m_KB_Input.test(KEY::SPACE))
+			translation.y += appliedMovement;
+		if (m_KB_Input.test(KEY::LSHIFT))
+			translation.y -= appliedMovement;
+
+		// Rotation
+		if (m_KB_Input.test(KEY::UP) && camera.r[2].m128_f32[1] < xClamp)
+			rotation.x -= appliedRotation;
+		if (m_KB_Input.test(KEY::DOWN) && camera.r[2].m128_f32[1] > -xClamp)
+			rotation.x += appliedRotation;
+		if (m_KB_Input.test(KEY::RIGHT))
+			rotation.y += appliedRotation;
+		if (m_KB_Input.test(KEY::LEFT))
+			rotation.y -= appliedRotation;
+
+		// Update View Matrix Position
+		local_temp = XMMatrixTranslation(translation.x, 0, translation.z);
+		global_temp = XMMatrixTranslation(0, translation.y, 0);
+		camera = XMMatrixMultiply(local_temp, camera);
+		camera = XMMatrixMultiply(camera, global_temp);
+
+		// Update View Matrix Rotation
+		XMVECTOR position = camera.r[3];
+		camera = XMMatrixMultiply(XMMatrixRotationX(rotation.x), camera);
+		camera = XMMatrixMultiply(camera, XMMatrixRotationY(rotation.y));
+		camera.r[3] = position;
+
+		// Inverse Matrix
+		determinant = XMMatrixDeterminant(camera);
+		camera = XMMatrixInverse(&determinant, camera);
+
 		XMStoreFloat4x4(&m_Matrices.view, camera);
 	}
 }
-void Renderer::SetRenderTargetsAndViewPorts()
-{
-	ID3D11RenderTargetView* tempRTVs[] = { m_RTV };
-	m_DeviceContext->OMSetRenderTargets(1, tempRTVs, nullptr);
-	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
-}
+
 
 

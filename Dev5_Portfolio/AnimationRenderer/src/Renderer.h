@@ -11,7 +11,7 @@ using namespace DirectX;
 #include "XMPLpShader.csh"
 namespace KEY
 {
-	enum KEYBOARD_KEY { W, A, S, D, DOWN, UP, LEFT, RIGHT, SPACE, LSHIFT, LCTRL, MBUTTON };
+	enum KEYBOARD_KEY { W, A, S, D, DOWN, UP, LEFT, RIGHT, SPACE, LSHIFT };
 }
 struct WVP
 {
@@ -37,6 +37,8 @@ public:
 		m_ColorVertexLayout->Release();
 		m_LineVertexBuffer->Release();
 		m_WVPConstantBuffer->Release();
+		m_zBuffer->Release();
+		m_zBufferView->Release();
 	}
 	void RenderLoop()
 	{
@@ -62,14 +64,15 @@ private:
 	RECT m_windowRect;
 	float m_aspectRatio = 1;
 	float m_deltaTime;
-
-	std::bitset<12> m_KB_Input;
+	std::bitset<10> m_KB_Input;
 
 	ID3D11Device* m_Device;
 	IDXGISwapChain* m_SwapChain;
 	ID3D11DeviceContext* m_DeviceContext;
 	ID3D11RenderTargetView* m_RTV;
 	D3D11_VIEWPORT m_ViewPort;
+	ID3D11Texture2D* m_zBuffer;
+	ID3D11DepthStencilView* m_zBufferView;
 
 	ID3D11Buffer* m_PyramidVertexBuffer;
 	ID3D11InputLayout* m_ColorVertexLayout;
@@ -92,9 +95,10 @@ private:
 	void CreateInputLayoutsAndShaders();
 	void CreateViewProjectionMatrices();
 	void CreateConstantBuffers();
+	void CreateZBufferAndView();
 
 	// In Loop
-	void SetRenderTargetsAndViewPorts();
+	void SetRenderVars();
 	void UpdateCamera();
 	void UpdateInput(WPARAM, bool);
 
