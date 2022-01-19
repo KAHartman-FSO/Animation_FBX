@@ -123,6 +123,7 @@ void Renderer::SetRenderVars()
 	m_DeviceContext->OMSetRenderTargets(1, tempRTVs, m_zBufferView);
 	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
 }
+
 void Renderer::UpdateInput(WPARAM _wParam, bool desiredState)
 {
 	if (_wParam == 'W')
@@ -167,7 +168,7 @@ void Renderer::UpdateCamera()
 		const float moveSpeed = 10;
 		const float rotationSpeed = 5;
 
-		const float xClamp = 0.8f;;
+		const float xClamp = 0.8f;
 
 		float appliedMovement = moveSpeed * m_deltaTime;
 		float appliedRotation = rotationSpeed * m_deltaTime;
