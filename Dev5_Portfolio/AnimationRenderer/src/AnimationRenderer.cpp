@@ -4,7 +4,6 @@
 #include "framework.h"
 #include "AnimationRenderer.h"
 #include "Renderer.h"
-#include "given/LoaderUtils.h"
 
 
 #define MAX_LOADSTRING 100
@@ -117,11 +116,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow){
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
    myRenderer.DXSetUp(hWnd);
-
-   dev5::SimpleMesh<dev5::SimpleVertex> mesh;
-   std::string filename;
-   dev5::InitFBX();
-   dev5::LoadFBX("../assets/MageAssets/idle.fbx", mesh, filename);
 
    return TRUE;
 }

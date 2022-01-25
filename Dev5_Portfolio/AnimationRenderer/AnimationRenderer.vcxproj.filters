@@ -51,15 +51,6 @@
     <ClInclude Include="src\LineDebugger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FBXExporter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\given\LoaderUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\given\MeshUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AnimationRenderer.cpp">
@@ -75,9 +66,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer_DRAW.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FBXExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

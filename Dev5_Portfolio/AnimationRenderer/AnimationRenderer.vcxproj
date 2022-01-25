@@ -184,9 +184,6 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\FBXExporter.h" />
-    <ClInclude Include="src\given\LoaderUtils.h" />
-    <ClInclude Include="src\given\MeshUtils.h" />
     <ClInclude Include="src\LineDebugger.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\AnimationRenderer.h" />
@@ -196,7 +193,6 @@
     <ClInclude Include="src\tools.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FBXExporter.cpp" />
     <ClCompile Include="src\LineDebugger.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\AnimationRenderer.cpp" />
