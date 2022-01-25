@@ -35,5 +35,5 @@
 *.opendb
 
 bin
-Ipch
+ipch
 /Dev5_Portfolio/Dependencies
