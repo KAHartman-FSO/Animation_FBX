@@ -88,5 +88,42 @@ void FBXExporter::ReadNormal(FbxMesh* inMesh, int inCtrlPointIndex, int inVertex
 			default:
 				break;
 	}
+}
+void FBXExporter::ReadUV(FbxMesh* inMesh, int inCtrlPointIndex, int inTextureUVindex, int inUVLayer, XMFLOAT2& outUV) {};
 
+void FBXExporter::ProcessMesh(FbxNode* inNode)
+{
+	FbxMesh* currMesh = inNode->GetMesh();
+	mTriangleCount = currMesh->GetPolygonCount();
+	int vertexCounter = 0;
+	mTriangles.reserve(mTriangleCount);
+
+	for (unsigned int i = 0; i < mTriangleCount; ++i)
+	{
+		XMFLOAT3 normal[3];
+		XMFLOAT3 tangent[3];
+		XMFLOAT3 binormal[3];
+		XMFLOAT2 UV[3][2];
+		Triangle currTriangle;
+		mTriangles.push_back(currTriangle);
+
+		for (unsigned int j = 0; j < 3; ++j)
+		{
+			// Read Normals
+			int ctrlPointIndex = currMesh->GetPolygonVertex(i, j);
+			CtrlPoint* currCtrlPoint = mControlPoints[ctrlPointIndex];
+			ReadNormal(currMesh, ctrlPointIndex, vertexCounter, normal[j]);
+
+			// Read UVs
+			// For only a diffuse texture
+			for (int k = 0; k < 1; k++)
+			{
+				
+			}
+
+		}
+	}
+	
+
+	
 }

@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AnimationRenderer", "AnimationRenderer\AnimationRenderer.vcxproj", "{1FAB1930-7501-4AC1-B316-6E8003875048}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FBXExporter", "FBXExporter\FBXExporter.vcxproj", "{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{1FAB1930-7501-4AC1-B316-6E8003875048}.Release|x64.Build.0 = Release|x64
 		{1FAB1930-7501-4AC1-B316-6E8003875048}.Release|x86.ActiveCfg = Release|Win32
 		{1FAB1930-7501-4AC1-B316-6E8003875048}.Release|x86.Build.0 = Release|Win32
+		{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}.Debug|x64.ActiveCfg = Debug|x64
+		{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}.Debug|x64.Build.0 = Debug|x64
+		{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}.Debug|x86.ActiveCfg = Debug|Win32
+		{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}.Debug|x86.Build.0 = Debug|Win32
+		{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}.Release|x64.ActiveCfg = Release|x64
+		{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}.Release|x64.Build.0 = Release|x64
+		{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}.Release|x86.ActiveCfg = Release|Win32
+		{CA0EF4BA-A55F-4794-B25F-E10CAA7FC20B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

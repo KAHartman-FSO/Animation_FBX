@@ -9,6 +9,7 @@ using namespace DirectX;
 #include "LineDebugger.h"
 #include "XMPLvShader.csh"
 #include "XMPLpShader.csh"
+#include <string>
 namespace KEY
 {
 	enum KEYBOARD_KEY { W, A, S, D, DOWN, UP, LEFT, RIGHT, SPACE, LSHIFT };
@@ -22,7 +23,9 @@ struct WVP
 class Renderer
 {
 public:
-	Renderer() {}
+	Renderer() 
+	{
+	}
 
 	// Frees All Memory from Renderer
 	~Renderer()

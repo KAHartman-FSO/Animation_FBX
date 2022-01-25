@@ -2,6 +2,7 @@
 #include <fbxsdk.h>
 #include <DirectXMath.h>
 #include <array>
+#include <vector>
 using namespace DirectX;
 #define MAX_CONTROL_POINTS 10000
 
@@ -11,14 +12,22 @@ private:
 	struct CtrlPoint
 	{
 		XMFLOAT3 mPosition;
-		XMFLOAT3 mNormal;
 	};
 	unsigned int ctrlPointCount = 0;
 	std::array<CtrlPoint*, MAX_CONTROL_POINTS> mControlPoints;
 	
+	struct Triangle
+	{
+
+	};
+	int mTriangleCount = 0;
+	std::vector<Triangle> mTriangles;
+	
 
 private:
 	
+	void ProcessMesh(FbxNode* inNode);
+
 	void ClearControlPoints();
 	/*	
 	*		Gets the positions of all the vertices of a mesh
@@ -34,5 +43,7 @@ private:
 	*	@param outNormal			>> the output
 	*/
 	void ReadNormal(FbxMesh* inMesh, int inCtrlPointIndex, int inVertexCounter, XMFLOAT3& outNormal);
+
+	void ReadUV(FbxMesh* inMesh, int inCtrlPointIndex, int inTextureUVindex, int inUVLayer, XMFLOAT2& outUV);
 };
 
