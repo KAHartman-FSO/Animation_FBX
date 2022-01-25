@@ -9,7 +9,6 @@ using namespace DirectX;
 #include "LineDebugger.h"
 #include "XMPLvShader.csh"
 #include "XMPLpShader.csh"
-#include "FBXExporter.h"
 #include <string>
 namespace KEY
 {
@@ -26,10 +25,6 @@ class Renderer
 public:
 	Renderer() 
 	{
-		FBXExporter* myExporter = new FBXExporter();
-		myExporter->Initialize();
-		myExporter->LoadScene("/assets/MageAssets/Idle.fbx", "/assets/MageAssets");
-		myExporter->ExportFBX();
 	}
 
 	// Frees All Memory from Renderer

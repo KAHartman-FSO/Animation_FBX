@@ -16,9 +16,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="FBX">
-      <UniqueIdentifier>{64f5f749-5e5b-4505-8711-ea837a7f5c15}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -30,21 +27,6 @@
     <ClInclude Include="src\LineDebugger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FBXExporter.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Material.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MathHelper.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utilities.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vertex.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AnimationRenderer.cpp">
@@ -55,15 +37,6 @@
     </ClCompile>
     <ClCompile Include="src\LineDebugger.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities.cpp">
-      <Filter>FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MathHelper.cpp">
-      <Filter>FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FBXExporter.cpp">
-      <Filter>FBX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

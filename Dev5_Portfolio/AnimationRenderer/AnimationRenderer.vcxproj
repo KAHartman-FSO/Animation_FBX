@@ -184,22 +184,14 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\FBXExporter.h" />
     <ClInclude Include="src\LineDebugger.h" />
-    <ClInclude Include="src\Material.h" />
-    <ClInclude Include="src\MathHelper.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\tools.h" />
-    <ClInclude Include="src\Utilities.h" />
-    <ClInclude Include="src\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FBXExporter.cpp" />
     <ClCompile Include="src\LineDebugger.cpp" />
-    <ClCompile Include="src\MathHelper.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\AnimationRenderer.cpp" />
-    <ClCompile Include="src\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\AnimationRenderer.rc" />
