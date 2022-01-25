@@ -1,5 +1,6 @@
 #include "Renderer.h"
-
+#pragma region Basic
+// CREATION
 void Renderer::CreateCalls()
 {
 	CreateDXVars();
@@ -8,17 +9,6 @@ void Renderer::CreateCalls()
 	CreateViewProjectionMatrices();
 	CreateZBufferAndView();
 }
-void Renderer::LoopCalls()
-{
-	m_deltaTime = calc_delta_time();
-	float Color[] = { 0.25f, 0.25f, 0.5f, 1 };
-	m_DeviceContext->ClearRenderTargetView(m_RTV, Color);
-	m_DeviceContext->ClearDepthStencilView(m_zBufferView, D3D11_CLEAR_DEPTH, 1.0f, NULL);
-
-	UpdateCamera();
-	SetRenderVars();
-}
-
 void Renderer::CreateDXVars() {
 	// Swap Chain Descriptor
 	DXGI_SWAP_CHAIN_DESC swap_desc;
@@ -51,7 +41,6 @@ void Renderer::CreateDXVars() {
 	m_ViewPort.MinDepth = 0;
 	m_ViewPort.MaxDepth = 1;
 }
-
 void Renderer::CreateInputLayoutsAndShaders()
 {
 	// Create Shaders
@@ -66,7 +55,6 @@ void Renderer::CreateInputLayoutsAndShaders()
 	};
 	hr = m_Device->CreateInputLayout(inputDesc, 2, XMPLvShader, sizeof(XMPLvShader), &m_ColorVertexLayout);
 }
-
 void Renderer::CreateConstantBuffers()
 {
 	// Allocate Space for World View and Projection Matrix
@@ -82,7 +70,6 @@ void Renderer::CreateConstantBuffers()
 	subData.pSysMem = &m_Matrices;
 	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_WVPConstantBuffer);
 }
-
 void Renderer::CreateZBufferAndView()
 {
 	D3D11_TEXTURE2D_DESC zDesc;
@@ -101,7 +88,6 @@ void Renderer::CreateZBufferAndView()
 	if (m_zBuffer != 0)
 		hr = m_Device->CreateDepthStencilView(m_zBuffer, nullptr, &m_zBufferView);
 }
-
 void Renderer::CreateViewProjectionMatrices()
 {
 	// View Matrix ( Camera Matrix )
@@ -114,16 +100,23 @@ void Renderer::CreateViewProjectionMatrices()
 	XMStoreFloat4x4(&m_Matrices.projection, temp);
 }
 
-/// <summary>
-///								<<<<<<<<< __Loop Calls__ >>>>>>>>>>>
-/// </summary>
+// UPDATE / REITERATION
+void Renderer::LoopCalls()
+{
+	m_deltaTime = calc_delta_time();
+	float Color[] = { 0.25f, 0.25f, 0.5f, 1 };
+	m_DeviceContext->ClearRenderTargetView(m_RTV, Color);
+	m_DeviceContext->ClearDepthStencilView(m_zBufferView, D3D11_CLEAR_DEPTH, 1.0f, NULL);
+
+	UpdateCamera();
+	SetRenderVars();
+}
 void Renderer::SetRenderVars()
 {
 	ID3D11RenderTargetView* tempRTVs[] = { m_RTV };
 	m_DeviceContext->OMSetRenderTargets(1, tempRTVs, m_zBufferView);
 	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
 }
-
 void Renderer::UpdateInput(WPARAM _wParam, bool desiredState)
 {
 	if (_wParam == 'W')
@@ -226,6 +219,134 @@ void Renderer::UpdateCamera()
 		XMStoreFloat4x4(&m_Matrices.view, camera);
 	}
 }
+#pragma endregion
 
+#pragma region Draw
+void Renderer::DrawCalls()
+{
+	m_DeviceContext->IASetInputLayout(m_ColorVertexLayout);
+	Draw_Pyramid();
+	Draw_Lines();
 
+}
+void Renderer::Draw_Pyramid()
+{
+	const int PYRAMID_VERTS = 12;
 
+	// World Matrix Set
+	XMMATRIX temp = XMMatrixIdentity();
+	temp = XMMatrixTranslation(0, 0, 1);
+
+	float rot_speed = 3;
+	static float theta = 0;
+	theta += rot_speed * m_deltaTime;
+	XMMATRIX temp2 = XMMatrixRotationY(theta);
+
+	temp = XMMatrixMultiply(temp2, temp);
+	XMStoreFloat4x4(&m_Matrices.world, temp);
+
+	// Sending Data to GPU
+	D3D11_MAPPED_SUBRESOURCE gpuBuffer;
+	hr = m_DeviceContext->Map(m_WVPConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &gpuBuffer);
+	memcpy(gpuBuffer.pData, &m_Matrices, sizeof(WVP));
+	m_DeviceContext->Unmap(m_WVPConstantBuffer, 0);
+
+	ID3D11Buffer* constants[] = { m_WVPConstantBuffer };
+	m_DeviceContext->VSSetConstantBuffers(0, 1, constants);
+
+	UINT strides[] = { sizeof(tools::ColorVertex) };
+	UINT offsets[] = { 0 };
+	ID3D11Buffer* tempVB[] = { m_PyramidVertexBuffer };
+	m_DeviceContext->IASetVertexBuffers(0, 1, tempVB, strides, offsets);
+	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_DeviceContext->VSSetShader(m_VertexShader, 0, 0);
+	m_DeviceContext->PSSetShader(m_PixelShader, 0, 0);
+
+	m_DeviceContext->Draw(PYRAMID_VERTS, 0);
+}
+void Renderer::Draw_Lines()
+{
+	XMMATRIX temp = XMMatrixIdentity();
+	XMStoreFloat4x4(&m_Matrices.world, temp);
+
+	// Sending Data to GPU
+	D3D11_MAPPED_SUBRESOURCE gpuBuffer;
+	hr = m_DeviceContext->Map(m_WVPConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &gpuBuffer);
+	memcpy(gpuBuffer.pData, &m_Matrices, sizeof(WVP));
+	m_DeviceContext->Unmap(m_WVPConstantBuffer, 0);
+
+	ID3D11Buffer* constants[] = { m_WVPConstantBuffer };
+	m_DeviceContext->VSSetConstantBuffers(0, 1, constants);
+
+	UINT strides[] = { sizeof(tools::ColorVertex) };
+	UINT offsets[] = { 0 };
+	ID3D11Buffer* tempVB[] = { m_LineVertexBuffer };
+	m_DeviceContext->IASetVertexBuffers(0, 1, tempVB, strides, offsets);
+	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	m_DeviceContext->VSSetShader(m_VertexShader, 0, 0);
+	m_DeviceContext->PSSetShader(m_PixelShader, 0, 0);
+
+	m_DeviceContext->Draw(m_lineDebugger.GetLineCount(), 0);
+}
+#pragma endregion
+
+#pragma region Load
+void Renderer::LoadCalls()
+{
+	Load_Pyramid();
+	Load_Lines();
+}
+void Renderer::Load_Lines()
+{
+	tools::ColorVertex gridCenterVertex = { {0.0f, 0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f} };
+	m_lineDebugger.CreateGrid(64, 64, 0.25f, gridCenterVertex);
+
+	// Create a Buffer
+	D3D11_BUFFER_DESC vbDesc;
+	D3D11_SUBRESOURCE_DATA subData;
+	ZeroMemory(&vbDesc, sizeof(D3D11_BUFFER_DESC));
+	ZeroMemory(&subData, sizeof(D3D11_SUBRESOURCE_DATA));
+	vbDesc.ByteWidth = m_lineDebugger.GetSize();
+	vbDesc.Usage = D3D11_USAGE_DEFAULT;
+	vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbDesc.CPUAccessFlags = NULL;
+	vbDesc.MiscFlags = NULL;
+	vbDesc.StructureByteStride = 0;
+	subData.pSysMem = m_lineDebugger.m_LineArray;
+	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_LineVertexBuffer);
+}
+void Renderer::Load_Pyramid()
+{
+	tools::ColorVertex pyramid[]
+	{
+		// Front
+		{{0.0f, 1.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{0.25f, -0.25, -0.25f, 1.0f}, {0.0f, 0.0f,1.0f, 1.0f}},
+		{{-0.25f, -0.25, -0.25f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		// Right
+		{ {0.0f, 1.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{0.25f, -0.25, 0.25f, 1.0f}, {0.0f, 0.0f,1.0f, 1.0f}},
+		{{0.25f, -0.25, -0.25f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		// Left
+		{{0.0f, 1.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{-0.25f, -0.25, -0.25f, 1.0f}, {0.0f, 0.0f,1.0f, 1.0f}},
+		{{-0.25f, -0.25, 0.25f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		// Back
+		{{0.0f, 1.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{-0.25f, -0.25, 0.25f, 1.0f}, {0.0f, 0.0f,1.0f, 1.0f}},
+		{{0.25f, -0.25, 0.25f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}}
+	};
+	D3D11_BUFFER_DESC vbDesc;
+	D3D11_SUBRESOURCE_DATA subData;
+	ZeroMemory(&vbDesc, sizeof(D3D11_BUFFER_DESC));
+	ZeroMemory(&subData, sizeof(D3D11_SUBRESOURCE_DATA));
+	vbDesc.ByteWidth = sizeof(pyramid);
+	vbDesc.Usage = D3D11_USAGE_DEFAULT;
+	vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbDesc.CPUAccessFlags = NULL;
+	vbDesc.MiscFlags = NULL;
+	vbDesc.StructureByteStride = 0;
+	subData.pSysMem = pyramid;
+	hr = m_Device->CreateBuffer(&vbDesc, &subData, &m_PyramidVertexBuffer);
+}
+#pragma endregion

@@ -9,47 +9,41 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\Hide This">
-      <UniqueIdentifier>{8e52b6f9-f2e1-4316-b9fe-60047f6d3dfb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Hide This\Resource Header Files">
-      <UniqueIdentifier>{424d8d92-1083-442d-b5db-f8bfc0588191}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Hide This\Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{023d755c-b9c0-453b-b8e7-0eed8053e577}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Pixel Shaders">
-      <UniqueIdentifier>{c7cbf2f9-088b-47b2-b637-3360edf02e36}</UniqueIdentifier>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Shaders\Vertex Shaders">
-      <UniqueIdentifier>{b55cd97d-877c-4377-a2cf-69559605cf42}</UniqueIdentifier>
+    <Filter Include="FBX">
+      <UniqueIdentifier>{64f5f749-5e5b-4505-8711-ea837a7f5c15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\targetver.h">
-      <Filter>Header Files\Hide This\Resource Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resource.h">
-      <Filter>Header Files\Hide This\Resource Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\framework.h">
-      <Filter>Header Files\Hide This\Resource Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AnimationRenderer.h">
-      <Filter>Header Files\Hide This\Resource Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\LineDebugger.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FBXExporter.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Material.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MathHelper.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utilities.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vertex.h">
+      <Filter>FBX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,32 +56,35 @@
     <ClCompile Include="src\LineDebugger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer_LOAD.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Utilities.cpp">
+      <Filter>FBX</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer_DRAW.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\MathHelper.cpp">
+      <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FBXExporter.cpp">
+      <Filter>FBX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\AnimationRenderer.rc">
-      <Filter>Header Files\Hide This\Resource Files</Filter>
+      <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\small.ico">
-      <Filter>Header Files\Hide This\Resource Files</Filter>
+      <Filter>Resource Files</Filter>
     </Image>
     <Image Include="src\AnimationRenderer.ico">
-      <Filter>Header Files\Hide This\Resource Files</Filter>
+      <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\XMPLpShader.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="shaders\XMPLvShader.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\XMPLpShader.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
